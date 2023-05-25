@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Task List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .task-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .task-card {
+            width: 300px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+            margin: 10px;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-card h3 {
+            margin-top: 0;
+        }
+
+        .task-card p {
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+
+        .task-card .status {
+            font-weight: bold;
+            color: #4caf50;
+        }
+
+        .task-card .deadline {
+            color: #888888;
+        }
+
+        .create-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .task-card {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Task List</h1>
+    <div class="task-container">
+        {% for task in tasks %}
+        <div class="task-card">
+            <h3>{{ task.title }}</h3>
+            <p>{{ task.description }}</p>
+            <p class="status">Status: {% if task.status %}Completed{% else %}Pending{% endif %}</p>
+            <p class="deadline">Deadline: {{ task.deadline }}</p>
+            <form action="{% url 'delete_task' task.id %}" method="post" onsubmit="return confirmDelete()">
+                {% csrf_token %}
+                <button type="submit">Delete</button>
+            </form>
+            <a href="{% url 'edit_task' task.id %}">update</a>
+
+        </div>
+        {% empty %}
+        <p>No tasks available.</p>
+        {% endfor %}
+    </div>
+    <a href="{% url 'create_task' %}" class="create-link">Create Task</a>
+    <script>
+        function confirmDelete() {
+            return confirm("Are you sure you want to delete this task?");
+        }
+    </script>
+</body>
+
+</html>
